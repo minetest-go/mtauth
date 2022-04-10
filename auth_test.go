@@ -55,4 +55,16 @@ func TestAuth(t *testing.T) {
 	if success {
 		t.FailNow()
 	}
+
+	// ad-hoc creation
+	salt, verifier, err = CreateAuth("a", "b")
+
+	// valid credentials
+	success, err = VerifyAuth("a", "b", salt, verifier)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !success {
+		t.FailNow()
+	}
 }

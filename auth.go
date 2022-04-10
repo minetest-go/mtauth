@@ -28,3 +28,7 @@ func VerifyAuth(username, password string, salt, verifier []byte) (bool, error) 
 
 	return true, nil
 }
+
+func CreateAuth(username, password string) (salt, verifier []byte, err error) {
+	return srp.NewClient([]byte(username), []byte(password))
+}
