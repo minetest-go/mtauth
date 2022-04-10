@@ -1,10 +1,8 @@
 package main
 
 import (
-	"crypto/subtle"
 	"encoding/base64"
 	"fmt"
-	"mtauth/srp"
 	"strings"
 	"testing"
 )
@@ -31,25 +29,30 @@ func TestAuth(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	//fmt.Printf("%s, %v, %v\n", version, salt, verifier)
-
-	// client
-	pubA, privA, err := srp.InitiateHandshake()
+	// valid credentials
+	success, err := VerifyAuth("test", "enter", salt, verifier)
 	if err != nil {
 		t.Fatal(err)
 	}
+	if !success {
+		t.FailNow()
+	}
 
-	// server
-	B, _, K, err := srp.Handshake(pubA, verifier)
-
-	// client
-	clientK, err := srp.CompleteHandshake(pubA, privA, []byte("test"), []byte("enter"), salt, B)
+	// invalid password
+	success, err = VerifyAuth("test", "bogus", salt, verifier)
 	if err != nil {
 		t.Fatal(err)
 	}
+	if success {
+		t.FailNow()
+	}
 
-	// server
-	if subtle.ConstantTimeCompare(clientK, K) != 1 {
-		t.Fatal("invalid proof")
+	// invalid user
+	success, err = VerifyAuth("testx", "enter", salt, verifier)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if success {
+		t.FailNow()
 	}
 }
