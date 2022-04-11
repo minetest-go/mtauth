@@ -12,7 +12,7 @@ Currently supported backends:
 
 ## Api
 
-### Read auth entry `/api/auth/{username}`
+### Read auth entry `GET /api/auth/{username}`
 
 Read the auth entry of the `test` user:
 ```bash
@@ -33,7 +33,7 @@ Status-codes:
 * **404** no player with that name found
 * **500** server error
 
-### Verify a password `api/auth/{username}/verify`
+### Verify a password `POST api/auth/{username}/verify`
 
 Verify the password "enter" on the user "test"
 ```bash
@@ -46,7 +46,7 @@ Status-codes:
 * **404** no player with that name found
 * **500** server error
 
-### Get privileges `api/user_privileges/{id}`
+### Get privileges `GET api/user_privileges/{id}`
 
 Get the privs for user with id "2"
 ```bash
