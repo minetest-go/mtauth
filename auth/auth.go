@@ -4,8 +4,9 @@ import (
 	"crypto/subtle"
 	"encoding/base64"
 	"errors"
-	"mtauth/srp"
 	"strings"
+
+	"github.com/HimbeerserverDE/srp"
 )
 
 func ParseDBPassword(password string) (salt, verifier []byte, err error) {
