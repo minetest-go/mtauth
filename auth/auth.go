@@ -4,10 +4,19 @@ import (
 	"crypto/subtle"
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/HimbeerserverDE/srp"
 )
+
+func CreateDBPassword(salt, verifier []byte) string {
+	return fmt.Sprintf(
+		"#1#%s#%s",
+		base64.RawStdEncoding.EncodeToString(salt),
+		base64.RawStdEncoding.EncodeToString(verifier),
+	)
+}
 
 func ParseDBPassword(password string) (salt, verifier []byte, err error) {
 	parts := strings.Split(password, "#")

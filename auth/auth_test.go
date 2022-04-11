@@ -9,6 +9,17 @@ import (
 // test:enter from the database column
 const CREDENTIALS = "#1#TxqLUa/uEJvZzPc3A0xwpA#oalXnktlS0bskc7bccsoVTeGwgAwUOyYhhceBu7wAyITkYjCtrzcDg6W5Co5V+oWUSG13y7TIoEfIg6rafaKzAbwRUC9RVGCeYRIUaa0hgEkIe9VkDmpeQ/kfF8zT8p7prOcpyrjWIJR+gmlD8Bf1mrxoPoBLDbvmxkcet327kQ9H4EMlIlv+w3XCufoPGFQ1UrfWiVqqK8dEmt/ldLPfxiK1Rg8MkwswEekymP1jyN9Cpq3w8spVVcjsxsAzI5M7QhSyqMMrIThdgBsUqMBOCULdV+jbRBBiA/ClywtZ8vvBpN9VGqsQuhmQG0h5x3fqPyR2XNdp9Ocm3zHBoJy/w"
 
+func TestCreateDBPasswordAuth(t *testing.T) {
+	salt, verifier, err := CreateAuth("x", "y")
+	assert.NoError(t, err)
+	data := CreateDBPassword(salt, verifier)
+	salt, verifier, err = ParseDBPassword(data)
+	assert.NoError(t, err)
+	ok, err := VerifyAuth("x", "y", salt, verifier)
+	assert.NoError(t, err)
+	assert.True(t, ok)
+}
+
 func TestAuth(t *testing.T) {
 	salt, verifier, err := ParseDBPassword(CREDENTIALS)
 	assert.NoError(t, err)

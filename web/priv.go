@@ -21,11 +21,13 @@ func (ac *PrivController) GetPrivs(resp http.ResponseWriter, req *http.Request) 
 	id, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
 		SendError(resp, 500, err.Error())
+		return
 	}
 
 	list, err := ac.repo.GetByID(id)
 	if err != nil {
 		SendError(resp, 500, err.Error())
+	} else {
+		SendJson(resp, list)
 	}
-	SendJson(resp, list)
 }

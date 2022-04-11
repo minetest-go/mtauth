@@ -37,24 +37,29 @@ func (ac *AuthController) Verify(resp http.ResponseWriter, req *http.Request) {
 	entry, err := ac.repo.GetByUsername(username)
 	if err != nil {
 		SendError(resp, 500, err.Error())
+		return
 	}
 	if entry == nil {
 		SendError(resp, 404, "not found")
+		return
 	}
 
 	salt, verifier, err := auth.ParseDBPassword(entry.Password)
 	if err != nil {
 		SendError(resp, 500, err.Error())
+		return
 	}
 
 	data, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		SendError(resp, 500, err.Error())
+		return
 	}
 
 	ok, err := auth.VerifyAuth(username, string(data), salt, verifier)
 	if err != nil {
 		SendError(resp, 500, err.Error())
+		return
 	}
 	if ok {
 		resp.WriteHeader(http.StatusOK)

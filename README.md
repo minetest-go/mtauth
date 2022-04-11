@@ -9,6 +9,7 @@ Currently supported backends:
 # Features
 
 * Query and verify authentication details
+* Create new users with initial passwords and privileges
 * Fetch user privileges
 
 ## Api
@@ -32,6 +33,28 @@ curl http://127.0.0.1:8080/api/auth/test
 Status-codes:
 * **200** on success
 * **404** no player with that name found
+* **500** server error
+
+### Create a new user `POST api/createuser`
+
+Create a user named "abcd" with password "enter" and "interact" priv
+```bash
+curl --data '{"name":"abcd","password":"enter","privs":["interact"]}' http://127.0.0.1:8080/api/createuser
+```
+
+Response
+```json
+{
+  "id": 4,
+  "name": "abcd",
+  "password": "#1#RXdpYoCAj5Ro8l20mC6k3Raz7am6R36ZDSUcXtCcJMw#S5ITVNYLgVmxmBghMUtkjmMRurvLX1/5+pX8orDXbN33bhGeva2CIlI/ZC7tXkYHKK/dl238QCr8o3Ny1x5wxfLH/UV6WnyBZa5FOU7/CW0+z8MtQwy004I76mlBIgLM3/qyUFpLfonorx2ZzGzm9bskcbjzBCH0arb731WrXdW7cbjbEZ46xqphbImOTEtmVFjMWtdPdJLZrwiV3Asz6pXV8JnwsScRD1syTKg+wnQFkJVvoVZJAd2IuYiCA4kUt0rBb6yWTzwhraiIBiFkQTkgqVn6VMUQIDAz0ltfHkktQv6WA1x2jSnowL4RhC7vg7V94IXRy9yGK0LmX0RZdA",
+  "last_login": 1649690296
+}
+```
+
+Status-codes:
+* **200** on success
+* **409** auth-entry already exists
 * **500** server error
 
 ### Verify a password `POST api/auth/{username}/verify`
