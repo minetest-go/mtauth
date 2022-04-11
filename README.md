@@ -1,5 +1,15 @@
 # mtauth
 
+Microservice for the minetest authentication database
+
+Currently supported backends:
+* sqlite3
+
+# Features
+
+* Query and verify authentication details
+* Fetch user privileges
+
 ## Api
 
 ### Read auth entry `/api/auth/{username}`
