@@ -12,7 +12,7 @@ type SQliteAuthRepository struct {
 }
 
 func NewSQliteAuthRepository(filename string) (*SQliteAuthRepository, error) {
-	db, err := sql.Open("sqlite", "file:"+filename+"?mode=ro")
+	db, err := sql.Open("sqlite", "file:"+filename)
 	if err != nil {
 		return nil, err
 	}
@@ -48,4 +48,41 @@ func (repo *SQliteAuthRepository) Migrate() error {
 
 func (repo *SQliteAuthRepository) Close() error {
 	return repo.db.Close()
+}
+
+func (repo *SQliteAuthRepository) GetByUsername(username string) (*AuthEntry, error) {
+	rows, err := repo.db.Query("select id,name,password,last_login from auth where name = ?", username)
+	if err != nil {
+		return nil, err
+	}
+	if !rows.Next() {
+		return nil, nil
+	}
+	entry := &AuthEntry{}
+	err = rows.Scan(&entry.ID, &entry.Name, &entry.Password, &entry.LastLogin)
+	return entry, err
+}
+
+func (repo *SQliteAuthRepository) Create(entry *AuthEntry) error {
+	result, err := repo.db.Exec("insert into auth(id,name,password,last_login) values(?,?,?,?)", entry.ID, entry.Name, entry.Password, entry.LastLogin)
+	if err != nil {
+		return err
+	}
+	id, err := result.LastInsertId()
+	if err != nil {
+		return err
+	}
+	// assign returned id
+	entry.ID = &id
+	return nil
+}
+
+func (repo *SQliteAuthRepository) Update(entry *AuthEntry) error {
+	_, err := repo.db.Exec("update auth set name = ?, password = ?, last_login = ? where id = ?", entry.Name, entry.Password, entry.LastLogin, entry.ID)
+	return err
+}
+
+func (repo *SQliteAuthRepository) Delete(id int64) error {
+	_, err := repo.db.Exec("delete from auth where id = ?", id)
+	return err
 }
