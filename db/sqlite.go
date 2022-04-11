@@ -47,7 +47,7 @@ func (repo *SQliteAuthRepository) Migrate() error {
 }
 
 func (repo *SQliteAuthRepository) GetByUsername(username string) (*AuthEntry, error) {
-	rows, err := repo.db.Query("select id,name,password,last_login from auth where name = ?", username)
+	rows, err := repo.db.Query("select id,name,password,last_login from auth where name = $1", username)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +60,7 @@ func (repo *SQliteAuthRepository) GetByUsername(username string) (*AuthEntry, er
 }
 
 func (repo *SQliteAuthRepository) Create(entry *AuthEntry) error {
-	result, err := repo.db.Exec("insert into auth(id,name,password,last_login) values(?,?,?,?)", entry.ID, entry.Name, entry.Password, entry.LastLogin)
+	result, err := repo.db.Exec("insert into auth(id,name,password,last_login) values($1,$2,$3,$4)", entry.ID, entry.Name, entry.Password, entry.LastLogin)
 	if err != nil {
 		return err
 	}
@@ -74,12 +74,12 @@ func (repo *SQliteAuthRepository) Create(entry *AuthEntry) error {
 }
 
 func (repo *SQliteAuthRepository) Update(entry *AuthEntry) error {
-	_, err := repo.db.Exec("update auth set name = ?, password = ?, last_login = ? where id = ?", entry.Name, entry.Password, entry.LastLogin, entry.ID)
+	_, err := repo.db.Exec("update auth set name = $1, password = $2, last_login = $3 where id = $4", entry.Name, entry.Password, entry.LastLogin, entry.ID)
 	return err
 }
 
 func (repo *SQliteAuthRepository) Delete(id int64) error {
-	_, err := repo.db.Exec("delete from auth where id = ?", id)
+	_, err := repo.db.Exec("delete from auth where id = $1", id)
 	return err
 }
 
@@ -97,7 +97,7 @@ func NewSQlitePrivilegeRepository(filename string) (*SQlitePrivRepository, error
 }
 
 func (repo *SQlitePrivRepository) GetByID(id int64) ([]*PrivilegeEntry, error) {
-	rows, err := repo.db.Query("select id,privilege from user_privileges where id = ?", id)
+	rows, err := repo.db.Query("select id,privilege from user_privileges where id = $1", id)
 	if err != nil {
 		return nil, err
 	}
@@ -114,11 +114,11 @@ func (repo *SQlitePrivRepository) GetByID(id int64) ([]*PrivilegeEntry, error) {
 }
 
 func (repo *SQlitePrivRepository) Create(entry *PrivilegeEntry) error {
-	_, err := repo.db.Exec("insert into user_privileges(id,privilege) values(?,?)", entry.ID, entry.Privilege)
+	_, err := repo.db.Exec("insert into user_privileges(id,privilege) values($1,$2)", entry.ID, entry.Privilege)
 	return err
 }
 
 func (repo *SQlitePrivRepository) Delete(id int64, privilege string) error {
-	_, err := repo.db.Exec("delete from user_privileges where id = ? and privilege = ?", id, privilege)
+	_, err := repo.db.Exec("delete from user_privileges where id = $1 and privilege = $2", id, privilege)
 	return err
 }
