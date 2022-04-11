@@ -23,7 +23,7 @@ Status-codes:
 * **404** no player with that name found
 * **500** server error
 
-### Verifiy a password `api/auth/{username}/verify`
+### Verify a password `api/auth/{username}/verify`
 
 Verify the password "enter" on the user "test"
 ```bash
