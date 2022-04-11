@@ -70,3 +70,22 @@ Status-codes:
 * **200** on success
 * **404** no player with that name found
 * **500** server error
+
+# Testing / dev
+
+## Postgres setup
+
+DB data import:
+```bash
+# start
+docker-compose up -d postgres
+# import
+cat pgdump.sql | docker exec -i mtauth_postgres_1 psql -U postgres
+# stop
+docker-compose down -v
+```
+
+psql shell:
+```bash
+docker-compose exec postgres psql -U postgres
+```
