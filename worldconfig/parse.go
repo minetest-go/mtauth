@@ -17,10 +17,10 @@ const (
 	CONFIG_PSQL_AUTH_CONNECTION string = "pgsql_auth_connection"
 )
 
-func Parse(filename string) map[string]string {
+func Parse(filename string) (map[string]string, error) {
 	file, err := os.Open(filename)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer file.Close()
 
@@ -40,5 +40,5 @@ func Parse(filename string) map[string]string {
 		cfg[keyStr] = valueStr
 	}
 
-	return cfg
+	return cfg, nil
 }

@@ -1,10 +1,10 @@
 package db
 
 type AuthEntry struct {
-	ID        *int64 `db:"id"`
-	Name      string `db:"name"`
-	Password  string `db:"password"`
-	LastLogin int    `db:"last_login"`
+	ID        *int64 `json:"id"`
+	Name      string `json:"name"`
+	Password  string `json:"password"`
+	LastLogin int    `json:"last_login"`
 }
 
 type AuthRepository interface {
