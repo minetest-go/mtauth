@@ -35,3 +35,28 @@ Status-codes:
 * **401** invalid credentials
 * **404** no player with that name found
 * **500** server error
+
+### Get privileges `api/user_privileges/{id}`
+
+Get the privs for user with id "2"
+```bash
+curl http://127.0.0.1:8080/api/user_privileges/2
+```
+
+```json
+[
+  {
+    "id": 2,
+    "privilege": "interact"
+  },
+  {
+    "id": 2,
+    "privilege": "shout"
+  }
+]
+```
+
+Status-codes:
+* **200** on success
+* **404** no player with that name found
+* **500** server error

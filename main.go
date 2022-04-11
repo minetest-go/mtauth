@@ -14,11 +14,18 @@ func main() {
 		panic(err)
 	}
 
-	var repo db.AuthRepository
+	var authrepo db.AuthRepository
+	var privrepo db.PrivilegeRepository
+
 	auth_backend := cfg[worldconfig.CONFIG_AUTH_BACKEND]
 	switch auth_backend {
 	case worldconfig.BACKEND_SQLITE3:
-		repo, err = db.NewSQliteAuthRepository("auth.sqlite")
+		authrepo, err = db.NewSQliteAuthRepository("auth.sqlite")
+		if err != nil {
+			panic(err)
+		}
+		// TODO: common db connection, standalone migration function
+		privrepo, err = db.NewSQlitePrivilegeRepository("auth.sqlite")
 		if err != nil {
 			panic(err)
 		}
@@ -27,7 +34,7 @@ func main() {
 		panic("unsupported backend: " + auth_backend)
 	}
 
-	web.Setup(repo)
+	web.Setup(authrepo, privrepo)
 	fmt.Printf("Listening on port %d\n", 8080)
 	err = http.ListenAndServe(":8080", nil)
 	if err != nil {

@@ -40,7 +40,6 @@ func TestCheckJournalModeDelete(t *testing.T) {
 	db, err := NewSQliteAuthRepository(dbfile.Name() + "?mode=ro")
 	assert.NoError(t, err)
 	assert.Error(t, db.Migrate())
-	assert.NoError(t, db.Close())
 }
 
 func TestCheckJournalModeWal(t *testing.T) {
@@ -52,7 +51,6 @@ func TestCheckJournalModeWal(t *testing.T) {
 	db, err := NewSQliteAuthRepository(dbfile.Name())
 	assert.NoError(t, err)
 	assert.NoError(t, db.Migrate())
-	assert.NoError(t, db.Close())
 }
 
 func TestSQliteRepo(t *testing.T) {
@@ -118,6 +116,62 @@ func TestSQliteRepo(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Nil(t, entry)
 
-	// cleanup
-	assert.NoError(t, db.Close())
+}
+
+func TestSQlitePrivRepo(t *testing.T) {
+	// init stuff
+	dbfile, err := os.CreateTemp(os.TempDir(), "auth.sqlite")
+	assert.NoError(t, err)
+	assert.NotNil(t, dbfile)
+	copyFileContents("testdata/auth.wal.sqlite", dbfile.Name())
+
+	// open db
+	repo, err := NewSQlitePrivilegeRepository(dbfile.Name())
+	assert.NoError(t, err)
+	assert.NotNil(t, repo)
+
+	// read privs
+	list, err := repo.GetByID(2)
+	assert.NoError(t, err)
+	assert.NotNil(t, list)
+	assert.Equal(t, 2, len(list))
+
+	privs := make(map[string]bool)
+	for _, e := range list {
+		privs[e.Privilege] = true
+	}
+	assert.True(t, privs["interact"])
+	assert.True(t, privs["shout"])
+
+	// create
+	assert.NoError(t, repo.Create(&PrivilegeEntry{ID: 2, Privilege: "stuff"}))
+
+	// verify
+	list, err = repo.GetByID(2)
+	assert.NoError(t, err)
+	assert.NotNil(t, list)
+	assert.Equal(t, 3, len(list))
+
+	privs = make(map[string]bool)
+	for _, e := range list {
+		privs[e.Privilege] = true
+	}
+	assert.True(t, privs["interact"])
+	assert.True(t, privs["shout"])
+	assert.True(t, privs["stuff"])
+
+	// delete
+	assert.NoError(t, repo.Delete(2, "stuff"))
+
+	list, err = repo.GetByID(2)
+	assert.NoError(t, err)
+	assert.NotNil(t, list)
+	assert.Equal(t, 2, len(list))
+
+	privs = make(map[string]bool)
+	for _, e := range list {
+		privs[e.Privilege] = true
+	}
+	assert.True(t, privs["interact"])
+	assert.True(t, privs["shout"])
 }
