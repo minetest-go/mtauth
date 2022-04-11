@@ -13,7 +13,6 @@ type PrivilegeEntry struct {
 }
 
 type AuthRepository interface {
-	Migrate() error
 	GetByUsername(username string) (*AuthEntry, error)
 	Create(entry *AuthEntry) error
 	Update(entry *AuthEntry) error

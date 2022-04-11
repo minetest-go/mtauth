@@ -4,6 +4,7 @@ Microservice for the minetest authentication database
 
 Currently supported backends:
 * sqlite3
+* postgres
 
 # Features
 

@@ -1,9 +1,12 @@
 package db
 
 import (
+	"database/sql"
 	"io"
 	"os"
 	"testing"
+
+	_ "modernc.org/sqlite"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -31,28 +34,6 @@ func copyFileContents(src, dst string) (err error) {
 	return
 }
 
-func TestCheckJournalModeDelete(t *testing.T) {
-	dbfile, err := os.CreateTemp(os.TempDir(), "auth.sqlite")
-	assert.NoError(t, err)
-	assert.NotNil(t, dbfile)
-	copyFileContents("testdata/auth.sqlite", dbfile.Name())
-
-	db, err := NewSQliteAuthRepository(dbfile.Name() + "?mode=ro")
-	assert.NoError(t, err)
-	assert.Error(t, db.Migrate())
-}
-
-func TestCheckJournalModeWal(t *testing.T) {
-	dbfile, err := os.CreateTemp(os.TempDir(), "auth.wal.sqlite")
-	assert.NoError(t, err)
-	assert.NotNil(t, dbfile)
-	copyFileContents("testdata/auth.wal.sqlite", dbfile.Name())
-
-	db, err := NewSQliteAuthRepository(dbfile.Name())
-	assert.NoError(t, err)
-	assert.NoError(t, db.Migrate())
-}
-
 func TestSQliteRepo(t *testing.T) {
 	// init stuff
 	dbfile, err := os.CreateTemp(os.TempDir(), "auth.sqlite")
@@ -61,12 +42,13 @@ func TestSQliteRepo(t *testing.T) {
 	copyFileContents("testdata/auth.wal.sqlite", dbfile.Name())
 
 	// open db
-	db, err := NewSQliteAuthRepository(dbfile.Name())
+	db, err := sql.Open("sqlite", "file:"+dbfile.Name())
 	assert.NoError(t, err)
-	assert.NoError(t, db.Migrate())
+	repo := NewAuthRepository(db)
+	assert.NotNil(t, repo)
 
 	// existing entry
-	entry, err := db.GetByUsername("test")
+	entry, err := repo.GetByUsername("test")
 	assert.NoError(t, err)
 	assert.NotNil(t, entry)
 	assert.Equal(t, "test", entry.Name)
@@ -75,7 +57,7 @@ func TestSQliteRepo(t *testing.T) {
 	assert.Equal(t, 1649603232, entry.LastLogin)
 
 	// non-existing entry
-	entry, err = db.GetByUsername("bogus")
+	entry, err = repo.GetByUsername("bogus")
 	assert.NoError(t, err)
 	assert.Nil(t, entry)
 
@@ -85,11 +67,11 @@ func TestSQliteRepo(t *testing.T) {
 		Password:  "blah",
 		LastLogin: 456,
 	}
-	assert.NoError(t, db.Create(new_entry))
+	assert.NoError(t, repo.Create(new_entry))
 	assert.NotNil(t, new_entry.ID)
 
 	// check newly created entry
-	entry, err = db.GetByUsername("createduser")
+	entry, err = repo.GetByUsername("createduser")
 	assert.NoError(t, err)
 	assert.NotNil(t, entry)
 	assert.Equal(t, new_entry.Name, entry.Name)
@@ -101,8 +83,8 @@ func TestSQliteRepo(t *testing.T) {
 	new_entry.Name = "x"
 	new_entry.Password = "y"
 	new_entry.LastLogin = 123
-	assert.NoError(t, db.Update(new_entry))
-	entry, err = db.GetByUsername("x")
+	assert.NoError(t, repo.Update(new_entry))
+	entry, err = repo.GetByUsername("x")
 	assert.NoError(t, err)
 	assert.NotNil(t, entry)
 	assert.Equal(t, new_entry.Name, entry.Name)
@@ -111,8 +93,8 @@ func TestSQliteRepo(t *testing.T) {
 	assert.Equal(t, new_entry.LastLogin, entry.LastLogin)
 
 	// remove new user
-	assert.NoError(t, db.Delete(*new_entry.ID))
-	entry, err = db.GetByUsername("x")
+	assert.NoError(t, repo.Delete(*new_entry.ID))
+	entry, err = repo.GetByUsername("x")
 	assert.NoError(t, err)
 	assert.Nil(t, entry)
 
@@ -126,8 +108,9 @@ func TestSQlitePrivRepo(t *testing.T) {
 	copyFileContents("testdata/auth.wal.sqlite", dbfile.Name())
 
 	// open db
-	repo, err := NewSQlitePrivilegeRepository(dbfile.Name())
+	db, err := sql.Open("sqlite", "file:"+dbfile.Name())
 	assert.NoError(t, err)
+	repo := NewPrivilegeRepository(db)
 	assert.NotNil(t, repo)
 
 	// read privs

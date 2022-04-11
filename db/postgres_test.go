@@ -1,6 +1,7 @@
 package db
 
 import (
+	"database/sql"
 	"fmt"
 	"os"
 	"testing"
@@ -27,8 +28,9 @@ func TestPostgresDB(t *testing.T) {
 		os.Getenv("PGHOST"),
 		os.Getenv("PGDATABASE"))
 
-	repo, err := NewPostgresAuthRepository(connStr)
+	db, err := sql.Open("postgres", connStr)
 	assert.NoError(t, err)
+	repo := NewAuthRepository(db)
 	assert.NotNil(t, repo)
 
 	entry, err := repo.GetByUsername("test")
