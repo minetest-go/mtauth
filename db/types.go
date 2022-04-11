@@ -8,8 +8,10 @@ type AuthEntry struct {
 }
 
 type AuthRepository interface {
+	Migrate() error
 	GetByUsername(username string) (*AuthEntry, error)
 	Create(entry *AuthEntry) error
 	Update(entry *AuthEntry) error
 	Delete(id int64)
+	Close() error
 }
