@@ -2,8 +2,9 @@
 {{define "title"}}Login{{end}}
 
 {{define "content"}}
-<form target="/login" method="POST">
+<form method="POST">
     <input type="text" placeholder="Username" name="username"/>
     <input type="password" placeholder="Password" name="password"/>
+    <input type="submit" value="Login"/>
 </form>
 {{end}}

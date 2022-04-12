@@ -3,6 +3,7 @@ package web
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 )
 
 func NewOAuthController() *OAuthController {
@@ -25,5 +26,18 @@ func (ac *OAuthController) Authorize(resp http.ResponseWriter, req *http.Request
 		client_id, redirect_uri, scope, response_type, response_mode, nonce,
 	)
 
-	http.Redirect(resp, req, "../../login", http.StatusFound)
+	// TODO: check if logged-in
+
+	u, err := url.Parse("http://127.0.0.1:8080/login")
+	if err != nil {
+		SendError(resp, 500, err.Error())
+		return
+	}
+
+	nq := u.Query()
+	nq.Add("client_id", client_id)
+	nq.Add("return_to", req.URL.String())
+	u.RawQuery = nq.Encode()
+
+	http.Redirect(resp, req, u.String(), http.StatusFound)
 }

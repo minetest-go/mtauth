@@ -1,6 +1,7 @@
 package web
 
 import (
+	"fmt"
 	"mtauth/db"
 	"mtauth/web/templates"
 	"net/http"
@@ -19,5 +20,18 @@ type LoginController struct {
 }
 
 func (ac *LoginController) Login(resp http.ResponseWriter, req *http.Request) {
+	if req.Method == http.MethodPost {
+		err := req.ParseForm()
+		if err != nil {
+			SendError(resp, 500, err.Error())
+			return
+		}
+
+		username := req.Form.Get("username")
+		password := req.Form.Get("password")
+		fmt.Printf("username: %s, password: %s\n", username, password)
+
+	}
+
 	templates.Get("login.html").Execute(resp, nil)
 }
