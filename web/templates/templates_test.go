@@ -16,7 +16,7 @@ func TestTemplates(t *testing.T) {
 
 	buf := bytes.Buffer{}
 	w := bufio.NewWriter(&buf)
-	err = tmpl.Execute(w, true)
+	err = tmpl.Execute(w, nil)
 	assert.NoError(t, err)
 	assert.NoError(t, w.Flush())
 	assert.True(t, len(buf.Bytes()) > 0)

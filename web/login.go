@@ -19,5 +19,5 @@ type LoginController struct {
 }
 
 func (ac *LoginController) Login(resp http.ResponseWriter, req *http.Request) {
-	templates.Get("login.html").Execute(resp, true)
+	templates.Get("login.html").Execute(resp, nil)
 }

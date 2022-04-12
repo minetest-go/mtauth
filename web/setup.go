@@ -2,6 +2,7 @@ package web
 
 import (
 	"mtauth/db"
+	"mtauth/web/static"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -21,6 +22,8 @@ func Setup(authrepo db.AuthRepository, privrepo db.PrivilegeRepository) {
 	r.HandleFunc("/api/user_privileges/{id}", priv_controller.GetPrivs)
 	// forms
 	r.HandleFunc("/login", login_controller.Login)
+	// static files
+	r.PathPrefix("/").HandlerFunc(http.FileServer(http.FS(static.Files)).ServeHTTP)
 
 	http.Handle("/", r)
 }
