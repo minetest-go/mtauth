@@ -2,6 +2,13 @@
 
 Microservice for the minetest authentication database
 
+![](https://github.com/minetest-go/mtauth/workflows/go-test/badge.svg)
+![](https://github.com/minetest-go/mtauth/workflows/build/badge.svg)
+
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/minetest-go/mtauth)
+[![Go Report Card](https://goreportcard.com/badge/github.com/minetest-go/mtauth)](https://goreportcard.com/report/github.com/minetest-go/mtauth)
+[![Coverage Status](https://coveralls.io/repos/github/minetest-go/mtauth/badge.svg)](https://coveralls.io/github/minetest-go/mtauth)
+
 Currently supported backends:
 * sqlite3
 * postgres
