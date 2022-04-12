@@ -19,6 +19,26 @@ Currently supported backends:
 * Create new users with initial passwords and privileges
 * Fetch user privileges
 
+# Running
+
+## Source
+
+```bash
+go build
+./mtauth
+```
+
+## Binary
+
+```bash
+./mtauth
+```
+
+## Docker
+
+* Docker hub: https://hub.docker.com/r/buckaroobanzay/mtauth
+* Docker image: `buckaroobanzay/mtauth`
+
 ## Api
 
 ### Read auth entry `GET /api/auth/{username}`
