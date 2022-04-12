@@ -2,5 +2,8 @@
 {{define "title"}}Login{{end}}
 
 {{define "content"}}
-TODO
+<form target="/login" method="POST">
+    <input type="text" placeholder="Username" name="username"/>
+    <input type="password" placeholder="Password" name="password"/>
+</form>
 {{end}}
