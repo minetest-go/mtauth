@@ -34,6 +34,23 @@ func copyFileContents(src, dst string) (err error) {
 	return
 }
 
+func TestEmptySQliteRepo(t *testing.T) {
+	// init stuff
+	dbfile, err := os.CreateTemp(os.TempDir(), "auth.empty.sqlite")
+	assert.NoError(t, err)
+
+	// open db
+	db, err := sql.Open("sqlite", "file:"+dbfile.Name())
+	assert.NoError(t, err)
+	repo := NewAuthRepository(db)
+	assert.NotNil(t, repo)
+
+	// existing entry
+	entry, err := repo.GetByUsername("test")
+	assert.Error(t, err)
+	assert.Nil(t, entry)
+}
+
 func TestSQliteRepo(t *testing.T) {
 	// init stuff
 	dbfile, err := os.CreateTemp(os.TempDir(), "auth.sqlite")

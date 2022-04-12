@@ -20,6 +20,23 @@ func TestCreateDBPasswordAuth(t *testing.T) {
 	assert.True(t, ok)
 }
 
+func TestInvalidVersion(t *testing.T) {
+	_, _, err := ParseDBPassword("#2#123#456")
+	assert.Error(t, err)
+}
+
+func TestInvalidDelimiter(t *testing.T) {
+	_, _, err := ParseDBPassword("#1#123")
+	assert.Error(t, err)
+}
+
+func TestInvalidBase64(t *testing.T) {
+	_, _, err := ParseDBPassword("#1#...#...")
+	assert.Error(t, err)
+	_, _, err = ParseDBPassword("#1#TxqLUa/uEJvZzPc3A0xwpA#...")
+	assert.Error(t, err)
+}
+
 func TestAuth(t *testing.T) {
 	salt, verifier, err := ParseDBPassword(CREDENTIALS)
 	assert.NoError(t, err)
