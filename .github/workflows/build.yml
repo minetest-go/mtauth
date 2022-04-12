@@ -53,5 +53,5 @@ jobs:
         if: success() && github.ref == 'refs/heads/master'
         run: |
           CGO_ENABLED=0 go build .
-          docker build . -t minetestgo/mtauth:latest
-          docker push minetestgo/mtauth:latest
+          docker build . -t buckaroobanzay/mtauth:latest
+          docker push buckaroobanzay/mtauth:latest
