@@ -23,6 +23,7 @@ func Setup(authrepo db.AuthRepository, privrepo db.PrivilegeRepository) {
 	r.HandleFunc("/api/user_privileges/{id}", priv_controller.GetPrivs)
 	r.HandleFunc("/oauth/authorize", oauth_controller.Authorize)
 	// forms
+	r.HandleFunc("/", Index)
 	r.HandleFunc("/login", login_controller.Login)
 	// static files
 	r.PathPrefix("/").HandlerFunc(http.FileServer(http.FS(static.Files)).ServeHTTP)

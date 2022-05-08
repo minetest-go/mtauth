@@ -9,14 +9,12 @@ import (
 )
 
 func TestTemplates(t *testing.T) {
-	err := Init()
-	assert.NoError(t, err)
-	tmpl := Get("login.html")
+	tmpl := Parse("index.html")
 	assert.NotNil(t, tmpl)
 
 	buf := bytes.Buffer{}
 	w := bufio.NewWriter(&buf)
-	err = tmpl.Execute(w, nil)
+	err := tmpl.Execute(w, nil)
 	assert.NoError(t, err)
 	assert.NoError(t, w.Flush())
 	assert.True(t, len(buf.Bytes()) > 0)

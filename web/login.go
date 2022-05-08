@@ -2,6 +2,7 @@ package web
 
 import (
 	"fmt"
+	"html/template"
 	"mtauth/db"
 	"mtauth/web/templates"
 	"net/http"
@@ -11,12 +12,14 @@ func NewLoginController(authrepo db.AuthRepository, privrepo db.PrivilegeReposit
 	return &LoginController{
 		authrepo: authrepo,
 		privrepo: privrepo,
+		tmpl:     templates.Parse("login.html"),
 	}
 }
 
 type LoginController struct {
 	authrepo db.AuthRepository
 	privrepo db.PrivilegeRepository
+	tmpl     *template.Template
 }
 
 func (ac *LoginController) Login(resp http.ResponseWriter, req *http.Request) {
@@ -33,5 +36,5 @@ func (ac *LoginController) Login(resp http.ResponseWriter, req *http.Request) {
 
 	}
 
-	templates.Get("login.html").Execute(resp, nil)
+	ac.tmpl.Execute(resp, nil)
 }

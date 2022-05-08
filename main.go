@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"mtauth/db"
 	"mtauth/web"
-	"mtauth/web/templates"
 	"mtauth/worldconfig"
 	"net/http"
 
@@ -14,12 +13,6 @@ import (
 )
 
 func main() {
-
-	err := templates.Init()
-	if err != nil {
-		panic(err)
-	}
-
 	cfg, err := worldconfig.Parse("world.mt")
 	if err != nil {
 		panic(err)
