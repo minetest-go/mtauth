@@ -5,7 +5,7 @@ import (
 	"errors"
 )
 
-func MigrateAuth(db *sql.DB) error {
+func EnableWAL(db *sql.DB) error {
 	result, err := db.Query("pragma journal_mode;")
 	if err != nil {
 		return err

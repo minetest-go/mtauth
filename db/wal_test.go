@@ -18,7 +18,7 @@ func TestCheckJournalModeDelete(t *testing.T) {
 
 	db, err := sql.Open("sqlite", "file:"+dbfile.Name()+"?mode=ro")
 	assert.NoError(t, err)
-	assert.Error(t, MigrateAuth(db))
+	assert.Error(t, EnableWAL(db))
 }
 
 func TestCheckJournalModeWal(t *testing.T) {
@@ -29,5 +29,5 @@ func TestCheckJournalModeWal(t *testing.T) {
 
 	db, err := sql.Open("sqlite", "file:"+dbfile.Name()+"?mode=ro")
 	assert.NoError(t, err)
-	assert.NoError(t, MigrateAuth(db))
+	assert.NoError(t, EnableWAL(db))
 }
