@@ -14,16 +14,12 @@ type CreateUser struct {
 	Privs    []string `json:"privs"`
 }
 
-func NewCreateUserController(authrepo db.AuthRepository, privrepo db.PrivilegeRepository) *CreateUserController {
-	return &CreateUserController{
-		authrepo: authrepo,
-		privrepo: privrepo,
-	}
+func NewCreateUserController(repos *db.Repositories) *CreateUserController {
+	return &CreateUserController{repos: repos}
 }
 
 type CreateUserController struct {
-	authrepo db.AuthRepository
-	privrepo db.PrivilegeRepository
+	repos *db.Repositories
 }
 
 func (ac *CreateUserController) CreateUser(resp http.ResponseWriter, req *http.Request) {
@@ -34,7 +30,7 @@ func (ac *CreateUserController) CreateUser(resp http.ResponseWriter, req *http.R
 		return
 	}
 
-	existing_auth, err := ac.authrepo.GetByUsername(create_user.Name)
+	existing_auth, err := ac.repos.Auth.GetByUsername(create_user.Name)
 	if err != nil {
 		SendError(resp, 500, err.Error())
 		return
@@ -57,7 +53,7 @@ func (ac *CreateUserController) CreateUser(resp http.ResponseWriter, req *http.R
 		LastLogin: int(time.Now().UnixMilli() / 1000),
 	}
 
-	err = ac.authrepo.Create(&auth_entry)
+	err = ac.repos.Auth.Create(&auth_entry)
 	if err != nil {
 		SendError(resp, 500, err.Error())
 		return
@@ -69,7 +65,7 @@ func (ac *CreateUserController) CreateUser(resp http.ResponseWriter, req *http.R
 				ID:        *auth_entry.ID,
 				Privilege: priv,
 			}
-			err = ac.privrepo.Create(&priv_entry)
+			err = ac.repos.Priv.Create(&priv_entry)
 			if err != nil {
 				SendError(resp, 500, err.Error())
 				return

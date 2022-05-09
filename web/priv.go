@@ -8,12 +8,12 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func NewPrivController(repo db.PrivilegeRepository) *PrivController {
-	return &PrivController{repo: repo}
+func NewPrivController(repos *db.Repositories) *PrivController {
+	return &PrivController{repos: repos}
 }
 
 type PrivController struct {
-	repo db.PrivilegeRepository
+	repos *db.Repositories
 }
 
 func (ac *PrivController) GetPrivs(resp http.ResponseWriter, req *http.Request) {
@@ -24,7 +24,7 @@ func (ac *PrivController) GetPrivs(resp http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	list, err := ac.repo.GetByID(id)
+	list, err := ac.repos.Priv.GetByID(id)
 	if err != nil {
 		SendError(resp, 500, err.Error())
 	} else {

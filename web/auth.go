@@ -9,18 +9,18 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func NewAuthController(repo db.AuthRepository) *AuthController {
-	return &AuthController{repo: repo}
+func NewAuthController(repos *db.Repositories) *AuthController {
+	return &AuthController{repos: repos}
 }
 
 type AuthController struct {
-	repo db.AuthRepository
+	repos *db.Repositories
 }
 
 func (ac *AuthController) GetAuth(resp http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	username := vars["username"]
-	entry, err := ac.repo.GetByUsername(username)
+	entry, err := ac.repos.Auth.GetByUsername(username)
 	if err != nil {
 		SendError(resp, 500, err.Error())
 	}
@@ -34,7 +34,7 @@ func (ac *AuthController) GetAuth(resp http.ResponseWriter, req *http.Request) {
 func (ac *AuthController) Verify(resp http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	username := vars["username"]
-	entry, err := ac.repo.GetByUsername(username)
+	entry, err := ac.repos.Auth.GetByUsername(username)
 	if err != nil {
 		SendError(resp, 500, err.Error())
 		return
