@@ -8,11 +8,11 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func Setup(authrepo db.AuthRepository, privrepo db.PrivilegeRepository) {
-	auth_controller := NewAuthController(authrepo)
-	priv_controller := NewPrivController(privrepo)
-	createuser_controller := NewCreateUserController(authrepo, privrepo)
-	login_controller := NewLoginController(authrepo, privrepo)
+func Setup(repos *db.Repositories) {
+	auth_controller := NewAuthController(repos)
+	priv_controller := NewPrivController(repos)
+	createuser_controller := NewCreateUserController(repos)
+	login_controller := NewLoginController(repos)
 	oauth_controller := NewOAuthController()
 
 	r := mux.NewRouter()

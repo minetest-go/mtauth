@@ -8,18 +8,16 @@ import (
 	"net/http"
 )
 
-func NewLoginController(authrepo db.AuthRepository, privrepo db.PrivilegeRepository) *LoginController {
+func NewLoginController(repos *db.Repositories) *LoginController {
 	return &LoginController{
-		authrepo: authrepo,
-		privrepo: privrepo,
-		tmpl:     templates.Parse("login.html"),
+		repos: repos,
+		tmpl:  templates.Parse("login.html"),
 	}
 }
 
 type LoginController struct {
-	authrepo db.AuthRepository
-	privrepo db.PrivilegeRepository
-	tmpl     *template.Template
+	repos *db.Repositories
+	tmpl  *template.Template
 }
 
 func (ac *LoginController) Login(resp http.ResponseWriter, req *http.Request) {
