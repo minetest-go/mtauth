@@ -6,6 +6,7 @@ import (
 	"mtauth/web"
 	"mtauth/worldconfig"
 	"net/http"
+	"os"
 
 	_ "github.com/lib/pq"
 	_ "modernc.org/sqlite"
@@ -17,7 +18,12 @@ func main() {
 		panic(err)
 	}
 
-	repos, err := db.Setup(cfg)
+	cwd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+
+	repos, err := db.Setup(cwd, cfg)
 	if err != nil {
 		panic(err)
 	}

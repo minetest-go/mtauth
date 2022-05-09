@@ -11,7 +11,7 @@ type Repositories struct {
 	Priv PrivilegeRepository
 }
 
-func Setup(cfg map[string]string) (*Repositories, error) {
+func Setup(worldpath string, cfg map[string]string) (*Repositories, error) {
 	repos := &Repositories{}
 
 	var err error
@@ -19,7 +19,7 @@ func Setup(cfg map[string]string) (*Repositories, error) {
 	auth_backend := cfg[worldconfig.CONFIG_AUTH_BACKEND]
 	switch auth_backend {
 	case worldconfig.BACKEND_SQLITE3:
-		auth_db, err = sql.Open("sqlite", "auth.sqlite")
+		auth_db, err = sql.Open("sqlite", worldpath+"/auth.sqlite")
 		if err != nil {
 			return nil, err
 		}
