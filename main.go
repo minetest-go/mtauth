@@ -44,7 +44,10 @@ func main() {
 			Key:   db.SETTING_SHARED_SECRET,
 			Value: base64.StdEncoding.EncodeToString(key),
 		}
-
+		err = repos.Settings.Create(shared_secret_entry)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	web.Setup(repos)
