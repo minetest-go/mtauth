@@ -7,8 +7,9 @@ import (
 )
 
 type Repositories struct {
-	Auth AuthRepository
-	Priv PrivilegeRepository
+	Auth     AuthRepository
+	Priv     PrivilegeRepository
+	Settings SettingsRepository
 }
 
 func Setup(worldpath string, cfg map[string]string) (*Repositories, error) {
@@ -54,6 +55,8 @@ func Setup(worldpath string, cfg map[string]string) (*Repositories, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	repos.Settings = *NewSettingsRepository(mtauthdb)
 
 	return repos, nil
 }

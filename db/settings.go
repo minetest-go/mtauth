@@ -2,12 +2,18 @@ package db
 
 import "database/sql"
 
+type setting_key string
+
+const (
+	SETTING_SHARED_SECRET setting_key = "shared_secret"
+)
+
 type SettingsRepository struct {
 	db *sql.DB
 }
 
 type Setting struct {
-	Key   string
+	Key   setting_key
 	Value string
 }
 
@@ -15,7 +21,7 @@ func NewSettingsRepository(db *sql.DB) *SettingsRepository {
 	return &SettingsRepository{db: db}
 }
 
-func (repo *SettingsRepository) GetByKey(key string) (*Setting, error) {
+func (repo *SettingsRepository) GetByKey(key setting_key) (*Setting, error) {
 	rows, err := repo.db.Query("select key,value from settings where key = $1", key)
 	if err != nil {
 		return nil, err
@@ -26,4 +32,9 @@ func (repo *SettingsRepository) GetByKey(key string) (*Setting, error) {
 	entry := &Setting{}
 	err = rows.Scan(&entry.Key, &entry.Value)
 	return entry, err
+}
+
+func (repo *SettingsRepository) Create(entry *Setting) error {
+	_, err := repo.db.Exec("insert into settings(key,value) values($1,$2)", entry.Key, entry.Value)
+	return err
 }

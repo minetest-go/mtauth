@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/base64"
 	"fmt"
+	"math/rand"
 	"mtauth/db"
 	"mtauth/web"
 	"mtauth/worldconfig"
@@ -26,6 +28,23 @@ func main() {
 	repos, err := db.Setup(cwd, cfg)
 	if err != nil {
 		panic(err)
+	}
+
+	shared_secret_entry, err := repos.Settings.GetByKey(db.SETTING_SHARED_SECRET)
+	if err != nil {
+		panic(err)
+	}
+	if shared_secret_entry == nil {
+		key := make([]byte, 32)
+		_, err = rand.Read(key)
+		if err != nil {
+			panic(err)
+		}
+		shared_secret_entry = &db.Setting{
+			Key:   db.SETTING_SHARED_SECRET,
+			Value: base64.StdEncoding.EncodeToString(key),
+		}
+
 	}
 
 	web.Setup(repos)

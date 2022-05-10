@@ -26,4 +26,10 @@ func TestSettings(t *testing.T) {
 	s, err := repo.GetByKey("notfound")
 	assert.NoError(t, err)
 	assert.Nil(t, s)
+
+	s = &Setting{
+		Key:   SETTING_SHARED_SECRET,
+		Value: "123",
+	}
+	assert.NoError(t, repo.Create(s))
 }
