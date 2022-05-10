@@ -47,6 +47,9 @@ func Setup(worldpath string, cfg map[string]string) (*Repositories, error) {
 	repos.Priv = NewPrivilegeRepository(auth_db)
 
 	mtauthdb, err := sql.Open("sqlite", worldpath+"/mtauth.sqlite")
+	if err != nil {
+		return nil, err
+	}
 	_, err = MigrateMTAuth(mtauthdb)
 	if err != nil {
 		return nil, err
@@ -57,6 +60,10 @@ func Setup(worldpath string, cfg map[string]string) (*Repositories, error) {
 	}
 
 	repos.Settings = *NewSettingsRepository(mtauthdb)
+	err = repos.Settings.SetupDefaults()
+	if err != nil {
+		return nil, err
+	}
 
 	return repos, nil
 }

@@ -1,6 +1,10 @@
 package db
 
-import "database/sql"
+import (
+	"crypto/rand"
+	"database/sql"
+	"encoding/base64"
+)
 
 type setting_key string
 
@@ -37,4 +41,27 @@ func (repo *SettingsRepository) GetByKey(key setting_key) (*Setting, error) {
 func (repo *SettingsRepository) Create(entry *Setting) error {
 	_, err := repo.db.Exec("insert into settings(key,value) values($1,$2)", entry.Key, entry.Value)
 	return err
+}
+
+func (repo *SettingsRepository) SetupDefaults() error {
+	shared_secret_entry, err := repo.GetByKey(SETTING_SHARED_SECRET)
+	if err != nil {
+		return err
+	}
+	if shared_secret_entry == nil {
+		key := make([]byte, 32)
+		_, err = rand.Read(key)
+		if err != nil {
+			return err
+		}
+		shared_secret_entry = &Setting{
+			Key:   SETTING_SHARED_SECRET,
+			Value: base64.StdEncoding.EncodeToString(key),
+		}
+		err = repo.Create(shared_secret_entry)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

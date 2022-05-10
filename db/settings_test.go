@@ -23,21 +23,16 @@ func TestSettings(t *testing.T) {
 	repo := NewSettingsRepository(db)
 	assert.NotNil(t, repo)
 
+	assert.NoError(t, repo.SetupDefaults())
+
 	s, err := repo.GetByKey("notfound")
 	assert.NoError(t, err)
 	assert.Nil(t, s)
 
-	// create
-	s = &Setting{
-		Key:   SETTING_SHARED_SECRET,
-		Value: "123",
-	}
-	assert.NoError(t, repo.Create(s))
-
-	// fetch newly creates
+	// fetch secret setting
 	s, err = repo.GetByKey(SETTING_SHARED_SECRET)
 	assert.NoError(t, err)
 	assert.NotNil(t, s)
 	assert.Equal(t, SETTING_SHARED_SECRET, s.Key)
-	assert.Equal(t, "123", s.Value)
+	assert.NotNil(t, s.Value)
 }
