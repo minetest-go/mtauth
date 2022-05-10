@@ -28,9 +28,15 @@ func (ac *LoginController) Login(resp http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		username := req.Form.Get("username")
-		password := req.Form.Get("password")
-		fmt.Printf("username: %s, password: %s\n", username, password)
+		action := req.Form.Get("action")
+		switch action {
+		case "login":
+			username := req.Form.Get("username")
+			password := req.Form.Get("password")
+			fmt.Printf("Login: username: %s, password: %s\n", username, password)
+		case "logout":
+			fmt.Printf("Logout\n")
+		}
 
 	}
 

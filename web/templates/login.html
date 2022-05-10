@@ -4,6 +4,11 @@
 <form method="POST">
     <input type="text" placeholder="Username" name="username"/>
     <input type="password" placeholder="Password" name="password"/>
+    <input type="hidden" name="action" value="login"/>
     <input type="submit" value="Login"/>
+</form>
+<form method="POST">
+    <input type="hidden" name="action" value="logout"/>
+    <input type="submit" value="Logout"/>
 </form>
 {{end}}
